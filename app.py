@@ -383,9 +383,12 @@ elif eje == "👥 Eje 2: Demografía y Dinámicas Sociales":
         df_tree = etnia_ciudad[etnia_ciudad["etnia"].isin(top_etnias)]
 
         # Top 5 países por etnia
-        df_tree_top = df_tree.groupby("etnia").apply(
-            lambda x: x.nlargest(5, "cantidad"), include_groups=False
-        ).reset_index(drop=True)
+        df_tree_top = (
+            df_tree.sort_values("cantidad", ascending=False)
+            .groupby("etnia")
+            .head(5)
+            .reset_index(drop=True)
+        )
 
         if not df_tree_top.empty:
             fig_tree = px.treemap(
@@ -462,7 +465,6 @@ elif eje == "🏛️ Eje 3: Servicios Consulares":
             y="consulado",
             title="Top 15 Oficinas Consulares por Carga Poblacional",
             color="personas",
-            color_continuous_scale="Reds",
         )
         fig_funnel.update_layout(height=600)
         st.plotly_chart(fig_funnel, use_container_width=True)
